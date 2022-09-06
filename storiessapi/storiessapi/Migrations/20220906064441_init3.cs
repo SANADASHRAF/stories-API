@@ -4,7 +4,7 @@
 
 namespace storiessapi.Migrations
 {
-    public partial class init1 : Migration
+    public partial class init3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

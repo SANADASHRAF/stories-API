@@ -11,8 +11,8 @@ using storiessapi.Model;
 namespace storiessapi.Migrations
 {
     [DbContext(typeof(stdbcontextr))]
-    [Migration("20220905060401_init1")]
-    partial class init1
+    [Migration("20220906064441_init3")]
+    partial class init3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

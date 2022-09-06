@@ -1,10 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using storiessapi.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+var connectionstring = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<stdbcontextr>(Options =>
+Options.UseSqlServer(connectionstring)
+);
+
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -43,36 +52,36 @@ builder.Services.AddSwaggerGen(Options =>
     });
 
     //security definatin (autorization)
-    Options.AddSecurityDefinition("Berear", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Berear",
-        BearerFormat = "jwt",
-        In = ParameterLocation.Header,
-        Description = "jwt header token  send with request for autorization"
+    //Options.AddSecurityDefinition("Berear", new OpenApiSecurityScheme
+    //{
+    //    Name = "Authorization",
+    //    Type = SecuritySchemeType.ApiKey,
+    //    Scheme = "Berear",
+    //    BearerFormat = "jwt",
+    //    In = ParameterLocation.Header,
+    //    Description = "jwt header token  send with request for autorization"
 
-    });
+    //});
 
     // Security Requirement
-    Options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-                 Description="jwt header token  send with request for autorization",
+    //Options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    //{
+    //    {
+    //        new OpenApiSecurityScheme
+    //        {
+    //            Reference = new OpenApiReference
+    //            {
+    //                Type = ReferenceType.SecurityScheme,
+    //                Id = "Bearer"
+    //            },
+    //            Name = "Bearer",
+    //            In = ParameterLocation.Header,
+    //             Description="jwt header token  send with request for autorization",
 
-            },
-            new List<string>()
-        }
-    });
+    //        },
+    //        new List<string>()
+    //    }
+    //});
 
 
 });
