@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using storiessapi.DTO;
 using storiessapi.Model;
 
@@ -15,11 +16,52 @@ namespace storiessapi.Controllers
         {
             _context = context;
         }
-        private List<string> extention = new List<string> { ".jpg", ".png" };
+
+        private List<string> allowextention = new List<string> { ".jpg", ".png" };
+        private long allowmaxsize = 1048576;
+
+
+        [HttpGet]
+        public async Task<IActionResult> Getstories()
+        {
+            var stories = await _context.stories.Include(n => n.Category).ToListAsync();
+            return Ok(stories);
+        }
+
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult>Getbyid(int id)
+        {
+
+            var story = await _context.stories.Where(n => n.Id == id).SingleOrDefaultAsync();
+            if (story == null)
+                return BadRequest("notfound");
+            return Ok(story);
+        
+        }
+
+
+        [HttpGet("getbycat")]
+        public async Task<IActionResult> Getcat(int id)
+        {
+
+            var story = await _context.stories.Where(n => n.categoryid==id).ToListAsync();
+            if (story == null)
+                return BadRequest("notfound");
+            return Ok(story);
+
+        }
+
 
         [HttpPost]
         public async Task<IActionResult>create([FromForm]storiesDTO dto)
         {
+
+            if (allowextention.Contains(Path.GetExtension(dto.img.FileName).ToLower()))
+                return BadRequest("the extention must be jpg or png");
+            if (dto.img.Length > allowmaxsize)
+                return BadRequest("the size must be less or equal 1 MB");
+
             using var datastream=new MemoryStream();
             await dto.img.CopyToAsync(datastream);
 
@@ -35,5 +77,7 @@ namespace storiessapi.Controllers
             _context.SaveChanges();
             return Ok(storyad);
         }
+
+
     }
 }
